@@ -4,12 +4,12 @@ import {juggler} from '@loopback/repository';
 const config = {
   name: 'mongodbds',
   connector: 'mongodb',
-  url: '',
+  url: 'mongodb+srv://web_project:Webproject2022@clusterwebpro.qwywa.mongodb.net/MascotasSegDb?retryWrites=true&w=majority',
   host: 'localhost',
   port: 27017,
   user: '',
   password: '',
-  database: 'MascotasSegDb',
+  database: '',
   useNewUrlParser: true
 };
 
