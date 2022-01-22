@@ -11,3 +11,7 @@ export * from './mascota-ciudad.controller';
 export * from './ciudad-mascota.controller';
 export * from './solicitud-adopcion-mascota.controller';
 export * from './mascota-solicitud-adopcion.controller';
+export * from './solicitud-adopcion-persona.controller';
+export * from './persona-solicitud-adopcion.controller';
+export * from './solicitud-adopcion-estado-solicitud.controller';
+export * from './estado-solicitud-solicitud-adopcion.controller';
