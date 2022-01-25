@@ -3,6 +3,8 @@ import {SolicitudAdopcion} from '.';
 import {Ciudad} from './ciudad.model';
 import {HistoriaMedica} from './historia-medica.model';
 import {Raza} from './raza.model';
+import {Vacuna} from './vacuna.model';
+import {VacunasMascota} from './vacunas-mascota.model';
 
 @model({
   settings: {
@@ -70,6 +72,9 @@ export class Mascota extends Entity {
 
   @belongsTo(() => Ciudad)
   ciudadId: number;
+
+  @hasMany(() => Vacuna, {through: {model: () => VacunasMascota}})
+  vacunas: Vacuna[];
 
   constructor(data?: Partial<Mascota>) {
     super(data);

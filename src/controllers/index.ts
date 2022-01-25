@@ -15,3 +15,6 @@ export * from './solicitud-adopcion-persona.controller';
 export * from './persona-solicitud-adopcion.controller';
 export * from './solicitud-adopcion-estado-solicitud.controller';
 export * from './estado-solicitud-solicitud-adopcion.controller';
+export * from './mascota-vacuna.controller';
+export * from './usuario-rol.controller';
+export * from './rol-usuario.controller';
