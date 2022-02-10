@@ -12,9 +12,10 @@ import {
   getModelSchemaRef, param, patch, post, put, requestBody,
   response
 } from '@loopback/rest';
+import {Keys as llaves} from '../config/keys';
 import {Usuario} from '../models';
 import {UsuarioRepository} from '../repositories';
-import {GeneralFnService} from '../services';
+import {GeneralFnService, NotificationService} from '../services';
 
 export class UsuarioController {
   constructor(
@@ -22,6 +23,8 @@ export class UsuarioController {
     public usuarioRepository: UsuarioRepository,
     @service(GeneralFnService)
     public fnService: GeneralFnService,
+    @service(NotificationService)
+    public notifyService: NotificationService
   ) { }
 
   @post('/usuarios')
@@ -47,8 +50,22 @@ export class UsuarioController {
     let claveCifrada = this.fnService.cifrarTexto(claveAleatoria);
     console.log(claveCifrada);
     usuario.clave = claveCifrada;
+    /**
+     * at this point the user is notified of his registration via email with sendgrid
+     */
+    let content = `<strong>Su usuario: ${usuario.username} have been registered succesfully</strong></ br>
+    <ul>
+      <li>Usuario: ${usuario.username}</li>
+      <li>Clave: ${claveAleatoria}</li>
+    </ul>
+    <strong><a>Finanshop.com<a><strong>< /br>
+    Consigue lo que deseas, y pagalo como quieras
+    `;
+    let subject = 'User registration';
+    this.notifyService.SendEmail(usuario.username, llaves.UserRegisterSubject, content);
 
-    return this.usuarioRepository.create(usuario);
+    let usuarioAgregado = await this.usuarioRepository.create(usuario);
+    return usuarioAgregado;
   }
 
   @get('/usuarios/count')

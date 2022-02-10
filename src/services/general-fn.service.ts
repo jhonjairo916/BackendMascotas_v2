@@ -20,7 +20,7 @@ export class GeneralFnService {
   cifrarTexto(texto: string): string {
     //Se encripta la clave con base en la llave que esta en config/keys.ts
     //let ciphertext = CryptoJS.AES.encrypt(texto, Llaves.EASKey).toString();
-    let ciphertext = CryptoJS.MD5(texto);
+    let ciphertext = CryptoJS.MD5(texto).toString();
 
     return ciphertext;
 

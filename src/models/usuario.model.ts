@@ -14,7 +14,7 @@ export class Usuario extends Entity {
     type: 'string',
     required: true,
   })
-  username: string;
+  username: string;//*Must be an email*
 
   @property({
     type: 'string',
