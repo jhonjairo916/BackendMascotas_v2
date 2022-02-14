@@ -9,13 +9,13 @@ import {
 } from '@loopback/repository';
 import {
   del, get,
-  getModelSchemaRef, param, patch, post, put, requestBody,
+  getModelSchemaRef, HttpErrors, param, patch, post, put, requestBody,
   response
 } from '@loopback/rest';
 import {Keys as llaves} from '../config/keys';
-import {Usuario} from '../models';
+import {Credenciales, Usuario} from '../models';
 import {UsuarioRepository} from '../repositories';
-import {GeneralFnService, NotificationService} from '../services';
+import {GeneralFnService, JwtService, NotificationService} from '../services';
 
 export class UsuarioController {
   constructor(
@@ -24,7 +24,9 @@ export class UsuarioController {
     @service(GeneralFnService)
     public fnService: GeneralFnService,
     @service(NotificationService)
-    public notifyService: NotificationService
+    public notifyService: NotificationService,
+    @service(JwtService)
+    public jwtService: JwtService
   ) { }
 
   @post('/usuarios')
@@ -58,8 +60,8 @@ export class UsuarioController {
       <li>Usuario: ${usuario.username}</li>
       <li>Clave: ${claveAleatoria}</li>
     </ul>
-    <strong><a>Finanshop.com<a><strong>< /br>
-    Consigue lo que deseas, y pagalo como quieras
+    <strong><a href="">mascotas.com<a><strong></br>
+    Consigue lo que deseas para tu mascota, y pagalo como quieras
     `;
     let subject = 'User registration';
     this.notifyService.SendEmail(usuario.username, llaves.UserRegisterSubject, content);
@@ -67,7 +69,35 @@ export class UsuarioController {
     let usuarioAgregado = await this.usuarioRepository.create(usuario);
     return usuarioAgregado;
   }
+  @post('identificar', {
+    responses: {
+      '200': {
+        description: 'Identificacion de usuario'
+      }
+    }
 
+  })
+  async identificar(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Credenciales),
+        },
+      },
+    }) credenciales: Credenciales
+  ): Promise<object> {
+    let usuario = await this.usuarioRepository.findOne({where: {username: credenciales.name_user, clave: credenciales.pass_user}});
+    if (usuario) {
+      let tk = this.jwtService.CreateJwtoken(usuario);
+      usuario.clave = '';
+      return {
+        user: usuario,
+        token: tk
+      }
+    } else {
+      throw new HttpErrors[401]("User or password incorrect.");
+    }
+  }
   @get('/usuarios/count')
   @response(200, {
     description: 'Usuario model count',

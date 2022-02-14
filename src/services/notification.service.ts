@@ -12,7 +12,7 @@ export class NotificationService {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
     const msg = {
       to: userName, // Change to your recipient
-      from: llaves.EmailFrom, // Change to your verified sender,"is the emaill registred in sendgrid"
+      from: llaves.EmailFrom, // Change to your verified sender,"is the email registred in sendgrid"
       subject: emailSubject,
       html: content,
     }
