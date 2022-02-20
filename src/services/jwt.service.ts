@@ -7,7 +7,7 @@ export class JwtService {
   constructor(/* Add @inject to inject parameters */) { }
 
   /*
-   * Service to create token with jsonwebtoken
+   * Service to create token with jsonwebtoken and verify it with parse-bearer-token
    */
   CreateJwtoken(usuario: Usuario) {
     let claveSecreta = llaves.KeyToken;
@@ -20,6 +20,20 @@ export class JwtService {
       }
     }, claveSecreta)
     return tk;
+  }
+  VerifyToken(token: string) {
+    try {
+      let decode = jwt.verify(token, llaves.KeyToken);
+      return decode;
+    } catch {
+      return null;
+    }
+    /**if (decode) {
+      return decode;
+    }
+    else {
+      throw new HttpErrors[401]("Failed the verification of the token");
+    }*/
   }
 
 

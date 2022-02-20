@@ -11,8 +11,8 @@ import {JwtService} from '../services';
  * npm i @loopback/security /Used to invoke the UserProfile/
  */
 
-export class AdminStrategy implements AuthenticationStrategy {
-  name: string = 'admin';
+export class PersonaStrategy implements AuthenticationStrategy {
+  name: string = 'persona';
   constructor(@service(JwtService)
   public jwtService: JwtService) {
 
@@ -26,7 +26,7 @@ export class AdminStrategy implements AuthenticationStrategy {
     let info = this.jwtService.VerifyToken(token);
     if (info) {
       //Se verifica si el rol de usuario es de administrador
-      if (info.data.rol_user == "61f3735e34c695141c9c7d8e") {
+      if (info.data.rol_user == "61f959bfaa4e5c7669765887") {
         let profile: UserProfile = Object.assign({
           id: info.data.id_user,
           name: info.data.name_user,
