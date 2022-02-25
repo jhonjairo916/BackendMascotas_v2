@@ -13,7 +13,7 @@ import {
   response
 } from '@loopback/rest';
 import {Keys as llaves} from '../config/keys';
-import {Credenciales, Usuario} from '../models';
+import {Credenciales, ResetearPassword, Usuario} from '../models';
 import {UsuarioRepository} from '../repositories';
 import {GeneralFnService, JwtService, NotificationService} from '../services';
 
@@ -29,6 +29,49 @@ export class UsuarioController {
     public jwtService: JwtService
   ) { }
 
+  @post('/resetear-password')
+  @response(200, {
+    description: 'Usuario model instance',
+    content: {'application/json': {schema: getModelSchemaRef(ResetearPassword)}},
+  })
+  async resetearPassword(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(ResetearPassword),
+        },
+      },
+    })
+    researPassword: ResetearPassword,
+  ): Promise<object> {
+    let usuario = await this.usuarioRepository.findOne({where: {username: researPassword.correo}})
+    if (!usuario) {
+      throw new HttpErrors[403]("User not found")
+    }
+    let claveAleatoria = this.fnService.generarPassword();
+    console.log(claveAleatoria);
+    let claveCifrada = this.fnService.cifrarTexto(claveAleatoria);
+    console.log(claveCifrada);
+    usuario.clave = claveCifrada;
+    /**
+     * At this point the user is notified of his new password via SMS
+     */
+    await this.usuarioRepository.update(usuario);
+    let content = `Your password have been updated succesfully:
+    Usuario: ${usuario.username}-
+    Nueva clave: ${claveAleatoria}
+    `;
+    let sent = this.notifyService.SendSMS(usuario.telefono, content);
+    if (sent) {
+      return {
+        sent: 'Ok'
+      }
+    }
+    return {
+      sent: 'Ko'
+    };
+
+  }
   @post('/usuarios')
   @response(200, {
     description: 'Usuario model instance',

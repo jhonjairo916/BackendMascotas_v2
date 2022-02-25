@@ -27,6 +27,12 @@ export class Usuario extends Entity {
   })
   idPersona?: number;
 
+  @property({
+    type: 'string',
+    required: true
+  })
+  telefono: string;
+
   @belongsTo(() => Rol)
   rolId: string;
 
