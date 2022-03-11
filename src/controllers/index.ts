@@ -3,6 +3,7 @@ export * from './ciudad-mascota.controller';
 export * from './ciudad.controller';
 export * from './departamento-ciudad.controller';
 export * from './departamento.controller';
+export * from './download-files.controller';
 export * from './estado-solicitud-solicitud-adopcion.controller';
 export * from './historia-medica-mascota.controller';
 export * from './historia-medica.controller';
@@ -29,4 +30,5 @@ export * from './upload-files.controller';
 export * from './usuario-rol.controller';
 export * from './usuario.controller';
 export * from './vacuna.controller';
+
 

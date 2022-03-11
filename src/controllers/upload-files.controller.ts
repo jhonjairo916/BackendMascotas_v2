@@ -1,23 +1,23 @@
 
-import {inject} from '@loopback/core';
+import {inject, service} from '@loopback/core';
 //import {repository} from '@loopback/repository';
 import {
-  HttpErrors, post,
+  post,
   Request,
   requestBody,
   Response,
   RestBindings
 } from '@loopback/rest';
-import multer from 'multer';
 import path from 'path';
 import {UploadFilesKeys} from '../config/upload-file-keys';
-
-
-
+import {LoadFileService} from '../services';
 
 
 export class UploadFilesController {
-  constructor() { }
+  constructor(
+    @service(LoadFileService)
+    public loadFileService: LoadFileService//Service used to load files to the server
+  ) { }
 
   @post('/cargarImagenMascota', {
     responses: {
@@ -38,7 +38,7 @@ export class UploadFilesController {
     @requestBody.file() request: Request,
   ): Promise<object | false> {
     const petImagePath = path.join(__dirname, UploadFilesKeys.PET_IMAGE_PATH);
-    let res = await this.StoreFileToPath(petImagePath, UploadFilesKeys.PET_IMAGE_FIELDNAME, request, response, UploadFilesKeys.IMAGE_ACCEPTED_EXT);
+    let res = await this.loadFileService.StoreFileToPath(petImagePath, UploadFilesKeys.PET_IMAGE_FIELDNAME, request, response, UploadFilesKeys.IMAGE_ACCEPTED_EXT);
     if (res) {
       const filename = response.req?.file?.filename;
       if (filename) {
@@ -46,49 +46,6 @@ export class UploadFilesController {
       }
     }
     return res;
-  }
-
-
-
-
-  private GetMulterStorageConfig(path: string) {
-    var filename: string = '';
-    const storage = multer.diskStorage({
-      destination: function (req, file, cb) {
-        cb(null, path);
-      },
-      filename: function (req, file, cb) {
-        filename = `${Date.now()}-${file.originalname}`
-        cb(null, filename);
-      }
-    });
-    //Return the  filename and the destination where we storage it
-    return storage;
-  }
-  private StoreFileToPath(storePath: string, fieldname: string, request: Request, response: Response, acceptedExt: string[]): Promise<object> {
-    return new Promise<object>((resolve, reject) => {
-      const storage = this.GetMulterStorageConfig(storePath);
-      const upload = multer({
-        storage: storage,
-        fileFilter: function (req, file, callback) {
-          var ext = path.extname(file.originalname).toUpperCase();
-          if (acceptedExt.includes(ext)) {
-            return callback(null, true);
-          }
-          return callback(new HttpErrors[400]('This format file is not supported.'));
-        },
-        limits: {
-          fileSize: UploadFilesKeys.MAX_FILE_SIZE
-        }
-      },
-      ).single(fieldname);
-      upload(request, response, (err: any) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(response);
-      });
-    });
   }
 
 }
