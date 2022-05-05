@@ -22,11 +22,19 @@ export class JwtService {
     return tk;
   }
   VerifyToken(token: string) {
+
     try {
       let decode = jwt.verify(token, llaves.KeyToken);
       return decode;
-    } catch {
+    } catch(error) {
+      if(error.name === 'TokenExpiredError') {
+        const payload = jwt.verify(token, llaves.KeyToken, {ignoreExpiration: true} );
+        //console.log('este es el error',error);
+        return payload;
+
+      }
       return null;
+
     }
     /**if (decode) {
       return decode;

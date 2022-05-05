@@ -43,7 +43,7 @@ export class App extends BootMixin(
         nested: true,
       },
     };
-    //Its added this line when we create a strategy in order to register it
+    //Its added this line when we create a strategy, its used in order to register it
     registerAuthenticationStrategy(this, AdminStrategy);
     registerAuthenticationStrategy(this, PersonaStrategy);
     this.component(AuthenticationComponent);

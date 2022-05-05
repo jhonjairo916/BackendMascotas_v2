@@ -70,6 +70,7 @@ export class DepartamentoController {
   async find(
     @param.filter(Departamento) filter?: Filter<Departamento>,
   ): Promise<Departamento[]> {
+    console.log("Se eata ejecutando el buscar todo")
     return this.departamentoRepository.find(filter);
   }
 
@@ -91,7 +92,7 @@ export class DepartamentoController {
   ): Promise<Count> {
     return this.departamentoRepository.updateAll(departamento, where);
   }
-
+  //@authenticate.skip()
   @get('/departamentos/{id}')
   @response(200, {
     description: 'Departamento model instance',
@@ -105,6 +106,7 @@ export class DepartamentoController {
     @param.path.number('id') id: number,
     @param.filter(Departamento, {exclude: 'where'}) filter?: FilterExcludingWhere<Departamento>
   ): Promise<Departamento> {
+    console.log("Se esta ejecutando el metodo por id")
     return this.departamentoRepository.findById(id, filter);
   }
 

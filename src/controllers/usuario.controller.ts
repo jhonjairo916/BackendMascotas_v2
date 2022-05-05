@@ -72,6 +72,27 @@ export class UsuarioController {
     };
 
   }
+
+  /* @post('/cambiarClave/{username}/{clave}')
+  @response(200, {
+    description: 'cambio de clave',
+    content: {'application/json': {schema: getModelSchemaRef(Credenciales)}},
+  })
+  async cambiar(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Credenciales, {
+            title: 'CambioUsuario'
+          }),
+        },
+      },
+    })
+    credenciales: Credenciales
+  ): Promise<object> {
+
+  } */
+
   @post('/usuarios')
   @response(200, {
     description: 'Usuario model instance',

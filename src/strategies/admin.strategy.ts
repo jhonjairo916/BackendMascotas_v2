@@ -18,29 +18,39 @@ export class AdminStrategy implements AuthenticationStrategy {
 
   }
   async authenticate(request: Request): Promise<UserProfile | undefined> {
-    const token = parseBearerToken(request);
-    //If token doesnt exist
-    if (!token) {
-      throw new HttpErrors[401]("There is not token in the request");
-    }
-    let info = this.jwtService.VerifyToken(token);
-    if (info) {
-      //Se verifica si el rol de usuario es de administrador
-      if (info.data.rol_user == "61f3735e34c695141c9c7d8e") {
-        let profile: UserProfile = Object.assign({
-          id: info.data.id_user,
-          name: info.data.name_user,
-          rol: info.data.rol_user
-        });
-        return profile;
+      console.log('This is the request'+request)
+    try{
+      const token = parseBearerToken(request);
+      if (!token) {
+        throw new HttpErrors[401]("There is not token in the request");
+      }
+      let info = this.jwtService.VerifyToken(token);
+      console.log('Este es el info->'+info);
+      if (info) {
+        //Se verifica si el rol de usuario es de administrador
+
+        if (info.data.rol_user == "61f3735e34c695141c9c7d8e") {
+          let profile: UserProfile = Object.assign({
+            id: info.data.id_user,
+            name: info.data.name_user,
+            rol: info.data.rol_user
+          });
+          return profile;
+        }
+        else {
+          throw new HttpErrors[401]("The token sent is correct, but you don`t have permissions to execute this action ");
+        }
       }
       else {
-        throw new HttpErrors[401]("The token sent is correct, but you don`t have permissions to execute this action ");
+        throw new HttpErrors[401]("The token sent is not valid");
       }
+    }catch(error){
+      console.log(+error.name)
     }
-    else {
-      throw new HttpErrors[401]("The token sent is not valid");
-    }
+
+    //If token doesnt exist
+    //console.log('Este es el token->'+token)
+
 
   }
 }
